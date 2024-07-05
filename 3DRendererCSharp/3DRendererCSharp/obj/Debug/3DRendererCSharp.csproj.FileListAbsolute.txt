@@ -1,0 +1,15 @@
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\3DRendererCSharp.exe.config
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\3DRendererCSharp.exe
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\3DRendererCSharp.pdb
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\OpenGL.dll
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\Tao.FreeGlut.dll
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Memory.dll
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\OpenGL.dll.config
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\Tao.FreeGlut.dll.config
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.csprojAssemblyReference.cache
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.csproj.CoreCompileInputs.cache
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.csproj.CopyComplete
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.exe
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.pdb
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.exe.config
