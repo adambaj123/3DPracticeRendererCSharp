@@ -8,11 +8,12 @@ namespace _3DRendererCSharp
     {
         private static int width = 1200, height = 720;
         private static ShaderProgram program;
-        private static VBO<Vector3> pyramid, cube;
-        private static VBO<Vector3> pyramidColor, cubeColor;
-        private static VBO<int> pyramidElements, cubeElements;
+        private static VBO<Vector3> cube;
+        private static VBO<Vector2> cubeUV;
+        private static VBO<int> cubeElements;
         private static System.Diagnostics.Stopwatch watch;
         private static float angle;
+        private static Texture SaveTexture;
         static void Main(string[] args)
         {
             Glut.glutInit();
@@ -32,11 +33,9 @@ namespace _3DRendererCSharp
             program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)width / height, 0.1f, 1000f));
             program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, new Vector3(0,1,0)));
 
-            pyramid = new VBO<Vector3>(new Vector3[] { new Vector3(0, 1, 0), new Vector3(-1, -1, 1), new Vector3(1,-1,1), //Front Face
-                    new Vector3(0,1,0), new Vector3(1,-1,1), new Vector3(1,-1,-1), //Right Face
-                    new Vector3(0,1,0), new Vector3(1,-1,-1), new Vector3(-1,-1,-1), //Back Face
-                    new Vector3(0,1,0), new Vector3(-1,-1,-1), new Vector3(-1,-1,1) //Left Face
-            }) ;
+            //Load Texture
+            SaveTexture = new Texture("SaveTexture.jpg");
+
             cube = new VBO<Vector3>(new Vector3[] {
                 new Vector3(1, 1, -1), new Vector3(-1, 1, -1), new Vector3(-1, 1, 1), new Vector3(1, 1, 1),//Front Face
                 new Vector3(1, -1, 1), new Vector3(-1, -1, 1), new Vector3(-1, -1, -1), new Vector3(1, -1, -1),
@@ -45,22 +44,17 @@ namespace _3DRendererCSharp
                 new Vector3(-1, 1, 1), new Vector3(-1, 1, -1), new Vector3(-1, -1, -1), new Vector3(-1, -1, 1),
                 new Vector3(1, 1, -1), new Vector3(1, 1, 1), new Vector3(1, -1, 1), new Vector3(1, -1, -1) });
 
-            pyramidElements = new VBO<int>(new int[] { 0, 1, 2,3,4,5,6,7,8,9,10,11 }, BufferTarget.ElementArrayBuffer);
             cubeElements = new VBO<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, BufferTarget.ElementArrayBuffer);
 
+            cubeUV = new VBO<Vector2>(new Vector2[]{
+                new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1),
+            new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1),
+            new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1),
+            new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1),
+            new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1),
+            new Vector2(0,0), new Vector2(1,0), new Vector2(1,1), new Vector2(0,1)});
 
-            pyramidColor = new VBO<Vector3>(new Vector3[] { new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0,0,1), //Front Face
-                    new Vector3(1,0,0), new Vector3(0,0,1), new Vector3(0,1,0), //Right Face
-                    new Vector3(1,0,0), new Vector3(0,1,0), new Vector3(0,0,1), //Back Face
-                    new Vector3(1,0,0), new Vector3(0,0,1), new Vector3(0,1,0) //Left Face
-            });
-            cubeColor = new VBO<Vector3>(new Vector3[] {
-                new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0),
-                new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0),
-                new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 0),
-                new Vector3(1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 1, 0),
-                new Vector3(0, 0, 1), new Vector3(0, 0, 1), new Vector3(0, 0, 1), new Vector3(0, 0, 1),
-                new Vector3(1, 0, 1), new Vector3(1, 0, 1), new Vector3(1, 0, 1), new Vector3(1, 0, 1) });
+            
 
             watch = System.Diagnostics.Stopwatch.StartNew();
             Glut.glutMainLoop();
@@ -73,12 +67,11 @@ namespace _3DRendererCSharp
 
         private static void OnClose()
         {
-            pyramid.Dispose();
-            pyramidElements.Dispose();
-            pyramidColor.Dispose();
+
             cube.Dispose();
-            cubeColor.Dispose();
+            cubeUV.Dispose();
             cubeElements.Dispose();
+            SaveTexture.Dispose();
             program.DisposeChildren = true;
             program.Dispose();
         }
@@ -92,22 +85,15 @@ namespace _3DRendererCSharp
             Gl.Viewport(0, 0, width, height);
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            program.Use();
-            program["model_matrix"].SetValue(Matrix4.CreateRotationY(angle) * Matrix4.CreateTranslation(new Vector3(-1.5f, 0, 0)));
+            Gl.UseProgram(program);
+            Gl.BindTexture(SaveTexture);
 
             uint verexPositionIndex = (uint)Gl.GetAttribLocation(program.ProgramID, "vertexPosition");
             Gl.EnableVertexAttribArray(verexPositionIndex);
-            Gl.BindBuffer(pyramid);
-            Gl.VertexAttribPointer(verexPositionIndex, pyramid.Size, pyramid.PointerType, true, 12, IntPtr.Zero);
-            Gl.BindBuffer(pyramidElements);
-            Gl.BindBufferToShaderAttribute(pyramidColor, program, "vertexColor");
 
-
-            Gl.DrawElements(BeginMode.Triangles, pyramidElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
-
-            program["model_matrix"].SetValue(Matrix4.CreateRotationY(angle/2) * Matrix4.CreateRotationX(angle) * Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
+            program["model_matrix"].SetValue(Matrix4.CreateRotationY(angle/2) * Matrix4.CreateRotationX(angle) * Matrix4.CreateTranslation(new Vector3(0, 0, 0)));
             Gl.BindBufferToShaderAttribute(cube, program, "vertexPosition");
-            Gl.BindBufferToShaderAttribute(cubeColor, program, "vertexColor");
+            Gl.BindBufferToShaderAttribute(cubeUV, program, "vertexUV");
             Gl.BindBuffer(cubeElements);
 
             Gl.DrawElements(BeginMode.Quads, cubeElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
@@ -118,28 +104,30 @@ namespace _3DRendererCSharp
 #version 130
 
 in vec3 vertexPosition;
-in vec3 vertexColor;
+in vec2 vertexUV;
 
-varying out vec3 color;
+out vec2 UV;
 
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform mat4 model_matrix;
 
 void main(void) {
-    color = vertexColor;
+    UV = vertexUV;
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
 }
 ";
         public static string FragmentShader = @"
 #version 130
 
-in vec3 color;
+uniform sampler2D texture;
+
+in vec2 UV;
 
 out vec4 fragment;
 void main(void)
 {
-    fragment = vec4(color,1);
+    fragment = texture2D(texture, UV);
 }";
     }
 

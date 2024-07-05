@@ -12,4 +12,6 @@ C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRender
 C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.exe
 C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.pdb
 C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Numerics.Vectors.dll
-C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\obj\Debug\3DRendererCSharp.exe.config
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Drawing.Common.dll
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Drawing.Common.pdb
+C:\Users\Owner\source\repos\3DRendererCSharp\3DRendererCSharp\bin\Debug\System.Drawing.Common.xml
