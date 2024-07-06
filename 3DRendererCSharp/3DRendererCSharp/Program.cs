@@ -19,6 +19,7 @@ namespace _3DRendererCSharp
         private static bool autoRotate = true;
         private static bool fullscreen = false;
         private static bool up = false, down = false, left = false, right = false;
+        private static bool blending = true;
         static void Main(string[] args)
         {
             Glut.glutInit();
@@ -32,7 +33,9 @@ namespace _3DRendererCSharp
             Glut.glutKeyboardUpFunc(OnKeyboardUp);
             Glut.glutReshapeFunc(onReshape);
 
-            Gl.Enable(EnableCap.DepthTest);
+            Gl.Disable(EnableCap.DepthTest);
+            Gl.Enable(EnableCap.Blend);
+            Gl.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
 
             program = new ShaderProgram(VertexShader, FragmentShader);
@@ -213,6 +216,20 @@ namespace _3DRendererCSharp
             {
                 right = false;
             }
+            if(key == 'b')
+            {
+                blending = !blending;
+                if (blending)
+                {
+                    Gl.Enable(EnableCap.Blend);
+                    Gl.Disable(EnableCap.DepthTest);
+                }
+                else
+                {
+                    Gl.Disable(EnableCap.Blend);
+                    Gl.Enable(EnableCap.DepthTest);
+                }
+            }
         }
 
         public static void onReshape(int width, int height)
@@ -258,7 +275,7 @@ void main(void)
     float ambient = 0.3;
     float lighting = (enable_lighting ? max(diffuse, ambient) : 1.0);
     vec4 sample = texture2D(texture, UV);
-    fragment = vec4(sample.xyz * lighting, sample.a);
+    fragment = vec4(lighting *texture2D(texture, UV).xyz, 0.5);
 }";
     }
 
